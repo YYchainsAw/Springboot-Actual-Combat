@@ -1,6 +1,7 @@
 package com.yychainsaw.service;
 
 import com.yychainsaw.pojo.User;
+import jakarta.validation.constraints.Pattern;
 
 public interface UserService {
     void register(String username, String password);
