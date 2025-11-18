@@ -38,6 +38,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updatePwd(String newPwd) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+
+        userMapper.updatePwd(Md5Util.getMD5String(newPwd), id);
+    }
+
+    @Override
     public void register(String username, String password) {
         //密码加密
         String md5String = Md5Util.getMD5String(password);

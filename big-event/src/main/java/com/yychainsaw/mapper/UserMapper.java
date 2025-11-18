@@ -27,4 +27,9 @@ public interface UserMapper {
             "SET user_pic = #{avatarUrl}, update_time = now() " +
             "WHERE id = #{id}")
     void updateAvatar(String avatarUrl, Integer id);
+
+    @Update("UPDATE user " +
+            "SET password = #{md5String}, update_time = now() " +
+            "WHERE id = #{id}")
+    void updatePwd(String md5String, Integer id);
 }
