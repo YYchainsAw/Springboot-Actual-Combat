@@ -3,13 +3,15 @@ package com.yychainsaw.controller;
 import com.yychainsaw.pojo.Result;
 import com.yychainsaw.pojo.User;
 import com.yychainsaw.service.UserService;
+import com.yychainsaw.utils.JwtUtil;
 import com.yychainsaw.utils.Md5Util;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -42,9 +44,25 @@ public class UserController {
         }
 
         if (Md5Util.getMD5String(password).equals(loginUser.getPassword())) {
-            return Result.success("jwt-token-example");
+            Map<String,Object> claims = new HashMap<>();
+            claims.put("id",loginUser.getId());
+            claims.put("username",loginUser.getUsername());
+
+            String token = JwtUtil.genToken(claims);
+
+            return Result.success(token);
         }
 
         return Result.error("密码错误");
+    }
+
+    @GetMapping("/userInfo")
+    public Result<User> userinfo(@RequestHeader(name = "Authorization") String token) {
+        Map<String, Object> map = JwtUtil.parseToken(token);
+        String username = (String) map.get("username");
+
+        User user = userService.findByUsername(username);
+
+        return Result.success(user);
     }
 }
