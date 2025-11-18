@@ -1,6 +1,5 @@
 package com.yychainsaw.interceptors;
 
-import com.yychainsaw.pojo.Result;
 import com.yychainsaw.utils.JwtUtil;
 import com.yychainsaw.utils.ThreadLocalUtil;
 import jakarta.servlet.http.HttpServletRequest;

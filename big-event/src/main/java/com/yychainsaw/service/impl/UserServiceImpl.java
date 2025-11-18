@@ -7,6 +7,8 @@ import com.yychainsaw.utils.Md5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -17,6 +19,12 @@ public class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         User u = userMapper.findByUsername(username);
         return u;
+    }
+
+    @Override
+    public void update(User user) {
+        user.setUpdateTime(LocalDateTime.now());
+        userMapper.update(user);
     }
 
     @Override
