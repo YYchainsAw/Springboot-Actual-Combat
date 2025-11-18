@@ -1,13 +1,11 @@
-/*
 package com.yychainsaw.utils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-*/
 /**
  * ThreadLocal 工具类
- *//*
+ */
 
 @SuppressWarnings("all")
 public class ThreadLocalUtil {
@@ -29,4 +27,4 @@ public class ThreadLocalUtil {
     public static void remove(){
         THREAD_LOCAL.remove();
     }
-}*/
+}

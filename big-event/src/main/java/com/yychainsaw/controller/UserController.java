@@ -5,6 +5,7 @@ import com.yychainsaw.pojo.User;
 import com.yychainsaw.service.UserService;
 import com.yychainsaw.utils.JwtUtil;
 import com.yychainsaw.utils.Md5Util;
+import com.yychainsaw.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -57,8 +58,8 @@ public class UserController {
     }
 
     @GetMapping("/userInfo")
-    public Result<User> userinfo(@RequestHeader(name = "Authorization") String token) {
-        Map<String, Object> map = JwtUtil.parseToken(token);
+    public Result<User> userinfo(/*@RequestHeader(name = "Authorization") String token*/) {
+        Map<String, Object> map = ThreadLocalUtil.get();
         String username = (String) map.get("username");
 
         User user = userService.findByUsername(username);
