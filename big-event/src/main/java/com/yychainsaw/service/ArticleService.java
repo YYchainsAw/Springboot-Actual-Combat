@@ -11,4 +11,6 @@ public interface ArticleService {
     void update(Article article);
 
     Article findById(Integer id);
+
+    void delete(Integer id);
 }
