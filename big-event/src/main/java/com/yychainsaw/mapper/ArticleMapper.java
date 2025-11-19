@@ -1,8 +1,11 @@
 package com.yychainsaw.mapper;
 
+import com.yychainsaw.anno.State;
 import com.yychainsaw.pojo.Article;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -15,4 +18,17 @@ public interface ArticleMapper {
 
 
     List<Article> list(Integer userId, Integer categoryId, String state);
+
+
+    @Update("UPDATE article " +
+            "SET title = #{title}, content = #{content}, cover_img = #{coverImg}, " +
+            "state = #{state}, category_id = #{categoryId}, update_time = now() " +
+            "WHERE id = #{id}")
+    void update(Article article);
+
+
+    @Select("SELECT * " +
+            "FROM article " +
+            "WHERE id = #{id}")
+    Article findById(Integer id);
 }

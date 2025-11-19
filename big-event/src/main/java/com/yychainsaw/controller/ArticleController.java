@@ -1,6 +1,7 @@
 package com.yychainsaw.controller;
 
 import com.yychainsaw.pojo.Article;
+import com.yychainsaw.pojo.Category;
 import com.yychainsaw.pojo.PageBean;
 import com.yychainsaw.pojo.Result;
 import com.yychainsaw.service.ArticleService;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/article")
+@Validated
 public class ArticleController {
 
     @Autowired
@@ -23,6 +25,12 @@ public class ArticleController {
         return Result.success();
     }
 
+    @PutMapping
+    public Result update(@RequestBody @Validated(Article.update.class) Article article) {
+        articleService.update(article);
+        return Result.success();
+    }
+
     @GetMapping
     public Result<PageBean<Article>> list(Integer pageNum,
                                           Integer pageSize,
@@ -31,5 +39,11 @@ public class ArticleController {
         PageBean<Article> pb = articleService.list(pageNum, pageSize, categoryId, state);
 
         return Result.success(pb);
+    }
+
+    @GetMapping("/detail")
+    public Result detail(Integer id){
+        Article ar = articleService.findById(id);
+        return Result.success(ar);
     }
 }
