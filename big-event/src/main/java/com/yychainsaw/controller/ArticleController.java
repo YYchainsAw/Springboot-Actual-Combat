@@ -1,6 +1,7 @@
 package com.yychainsaw.controller;
 
 import com.yychainsaw.pojo.Article;
+import com.yychainsaw.pojo.PageBean;
 import com.yychainsaw.pojo.Result;
 import com.yychainsaw.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,15 @@ public class ArticleController {
     public Result add(@RequestBody @Validated Article article) {
         articleService.add(article);
         return Result.success();
+    }
+
+    @GetMapping
+    public Result<PageBean<Article>> list(Integer pageNum,
+                                          Integer pageSize,
+                                          @RequestParam(required = false) Integer categoryId,
+                                          @RequestParam(required = false) String state){
+        PageBean<Article> pb = articleService.list(pageNum, pageSize, categoryId, state);
+
+        return Result.success(pb);
     }
 }
