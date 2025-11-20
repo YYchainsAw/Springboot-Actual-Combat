@@ -26,6 +26,7 @@ public class UserController {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
     @Autowired
     private UserService userService;
 
@@ -104,9 +105,9 @@ public class UserController {
         Map<String, Object> map = ThreadLocalUtil.get();
         String username = (String) map.get("username");
 
-        User LoginUser = userService.findByUsername(username);
+        User loginUser = userService.findByUsername(username);
 
-        if (!LoginUser.getPassword().equals(Md5Util.getMD5String(oldPwd))) {
+        if (!loginUser.getPassword().equals(Md5Util.getMD5String(oldPwd))) {
             return Result.error("原密码错误");
         }
 
