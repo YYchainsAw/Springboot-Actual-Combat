@@ -7,21 +7,25 @@ import com.yychainsaw.utils.JwtUtil;
 import com.yychainsaw.utils.Md5Util;
 import com.yychainsaw.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
-import lombok.experimental.PackagePrivate;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user")
 @Validated
 public class UserController {
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private UserService userService;
 
@@ -54,6 +58,11 @@ public class UserController {
 
             String token = JwtUtil.genToken(claims);
 
+            //存储到Redis中
+            ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+
+            operations.set(token, token, 1, TimeUnit.HOURS);
+
             return Result.success(token);
         }
 
@@ -83,7 +92,7 @@ public class UserController {
     }
 
     @PatchMapping("/updatePwd")
-    public Result updatePwd(@RequestBody Map<String, String> params) {
+    public Result updatePwd(@RequestBody  Map<String, String> params,@RequestHeader("Authorization") String token) {
         String oldPwd = params.get("old_pwd");
         String newPwd = params.get("new_pwd");
         String rePwd = params.get("re_pwd");
@@ -101,11 +110,23 @@ public class UserController {
             return Result.error("原密码错误");
         }
 
+        if (oldPwd.equals(newPwd)) {
+            return Result.error("新密码不能与原密码相同");
+        }
+
+        if (!newPwd.matches("^\\S{5,16}$")) {
+            return Result.error("新密码长度应在5-16位之间");
+        }
+
         if (!newPwd.equals(rePwd)) {
             return Result.error("两次输入的新密码不一致");
         }
-
         userService.updatePwd(newPwd);
+
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+
+        operations.getOperations().delete(token);
+
         return Result.success();
     }
 }
